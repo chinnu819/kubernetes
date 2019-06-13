@@ -1,0 +1,22 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: logger
+spec:
+  volumes:
+    - name: task-pv-storage
+      persistentVolumeClaim:
+       claimName: volume1-claim
+  containers:
+    - name: webcount
+      image: nginx
+      ports:
+        - containerPort: 80          
+      volumeMounts:
+        - mountPath: "/host_mnt/c/Users/kondaveetih/web-log/nginx"
+          name: task-pv-storage
+    - name: fdlogger
+      image: fluentd
+      volumeMounts:
+        - mountPath: "/host_mnt/c/Users/kondaveetih/web-log"
+          name: task-pv-storage      

@@ -1,0 +1,30 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: logger
+spec:   
+  containers: 
+    - name: webcount
+      image: nginx
+      ports: 
+        - containerPort: 80          
+      volumeMounts: 
+        - mountPath: "/host_mnt/c/Users/kondaveetih/web-log/nginx"
+          name: task-pv-storage
+    - name: fdlogger
+      image: fluentd
+      env: 
+      - name: FLUENTD_ARGS
+        value: -c /etc/fluentd-config/fluentd.conf 
+  volumes: 
+   - name: task-pv-storage 
+     persistentVolumeClaim: 
+        claimName: volume1-claim
+   - name: log-config
+     configMap:   
+     name: fluentd-config
+     volumeMounts: 
+        - mountPath: "/var/log"
+          name: task-pv-storage   
+        - name: log-config
+          mountPath: "/etc/fluentd-config"     
